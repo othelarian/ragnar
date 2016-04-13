@@ -1,3 +1,4 @@
+#!/usr/bin/coffee
 'use strict'
 
 # REQUIRES ######################################

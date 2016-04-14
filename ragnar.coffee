@@ -5,13 +5,10 @@
 
 ragnar = require('bindings')('ragnar.node')
 
-# TEST PHASE
-#
-
-console.log ragnar.hello()
-
-#
-
 # RAGNAR APP ####################################
 
-console.log 'It\'s about time ...'
+status = ragnar.start()
+
+console.log status
+
+#

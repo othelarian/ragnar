@@ -2,33 +2,44 @@
 
 // INCLUDES #####################################
 
+#include <iostream>
+
 #include "ragnar.h"
+
+using namespace std;
 
 // RAGNAR CLASS METHODS (PRIVATE) ###############
 
-Ragnar::Ragnar() : _value(0) {}
+Ragnar::Ragnar() : _value(8) {}
 Ragnar::~Ragnar() {}
 
 bool
 Ragnar::screen_randr(void) {
+  //awesome screen_scan_randr_monitors
+  //
+  // awesome code, don't work
+  //xcb_randr_get_monitors_cookie_t monitors_c = xcb_randr_get_monitors(_x_cnx,_dft_screen->root,1);
+  //xcb_randr_get_monitors_reply_t *monitors_r = xcb_randr_get_monitors_reply(_x_cnx,monitors_c,NULL);
+  //xcb_randr_monitor_info_iterator_t monitor_iter;
+  //
+  //awesome screen_update_primary
   //
   //
-  return false;
+  // i3 randr
   //
-}
-
-void
-screen_x11(void) {
+  xcb_randr_get_output_primary_cookie_t pcookie;
+  xcb_randr_get_screen_resources_current_cookie_t rcookie;
   //
+  pcookie = xcb_randr_get_output_primary(_x_cnx,_dft_screen->root);
+  rcookie = xcb_randr_get_screen_resources_current(_x_cnx,_dft_screen->root);
   //
+  xcb_randr_get_output_primary_reply_t *primary;
   //
-}
-
-bool
-screen_xinerama(void) {
+  if ((primary = xcb_randr_get_output_primary_reply(_x_cnx,pcookie,NULL)) == NULL) return false;
   //
   //
-  return false;
+  //
+  return true;
   //
 }
 
@@ -50,37 +61,34 @@ Ragnar::init(void) {
   // connection to X server
   _x_cnx = xcb_connect(NULL,&_dft_screen_nbr);
   if (xcb_connection_has_error(_x_cnx)) { return 1; }
-  //
-  // START TEST - informations about the screens
-  cout << endl << "default screen_nbr : " << _dft_screen_nbr << endl;
-  //
   iter = xcb_setup_roots_iterator(xcb_get_setup(_x_cnx));
   //
   int scrn_cnt = iter.rem;
-  cout << endl << "screen count : " << scrn_cnt << endl;
   //
   int tmp_screen_nbr = _dft_screen_nbr;
   //
-  xcb_screen_t *screen;
   for (;iter.rem;--tmp_screen_nbr,xcb_screen_next(&iter)) {
     if (tmp_screen_nbr == 0) {
       _dft_screen = iter.data;
+      //
       _dft_screen_height = _dft_screen->height_in_pixels;
       _dft_screen_width = _dft_screen->width_in_pixels;
       _dft_win_root = _dft_screen->root;
+      //
+      //screen->root_depth
+      //screen->default__colormap;
+      //
     }
-    //
-    screen = iter.data;
-    cout << endl << "screen " << screen->root << endl;
-    cout << "width : " << screen->width_in_pixels << endl;
-    cout << "height : " << screen->height_in_pixels << endl;
-    cout << endl;
   }
-  // END TEST
   //
-  // check for xrandr & xinerama, or basic x11
+  if (xcb_get_extension_data(_x_cnx,&xcb_randr_id)->present) {
+    //
+    cout << "randr not present" << endl;
+    //
+    return 2;
+  }
+  if (!screen_randr()) return 3;
   //
-  if (!screen_randr() && !screen_xinerama()) screen_x11();
   //
   //
   cout << "x connexion initialized" << endl;

@@ -8,7 +8,8 @@
       ],
       "cflags": ["-pedantic","-Wall"],
       "link_settings": {
-        "libraries": ["-lX11","-lXinerama"]
+        #"libraries": ["-lX11","-lXinerama"]
+        "libraries": ["-lxcb","-lxcb-randr"]
       }
     }
   ]

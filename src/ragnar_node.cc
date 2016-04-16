@@ -21,6 +21,8 @@ using namespace std;
 
 // GLOBAL VARIABLES #############################
 
+Ragnar *Ragnar::_uniq = NULL;
+
 static Ragnar *ragnarWM;
 
 // NODE FUNCTIONS ###############################
@@ -31,6 +33,11 @@ Start(const FunctionCallbackInfo<Value>& args) {
   int result;
   //
   result = ragnarWM->init();
+  //
+  // result 0 : OK
+  // result 1 : x_connect failed
+  // result 2 : randr not present
+  // result 3 : ??
   //
   //
   Isolate* isolate = args.GetIsolate();
@@ -53,7 +60,6 @@ at_exit_cb(void*) {
 
 void
 init(Local<Object> exports) {
-  //
   ragnarWM = Ragnar::getInstance();
   //
   NODE_SET_METHOD(exports,"start",Start);

@@ -1,9 +1,11 @@
 // ragnar.h
 
+#ifndef RAGNAR_H
+#define RAGNAR_H
+
 // INCLUDES #####################################
 
 #include <xcb/xcb.h>
-#include <xcb/xineram.h>
 #include <xcb/randr.h>
 
 // RAGNAR SINGLETON #############################
@@ -13,8 +15,6 @@ class Ragnar {
   Ragnar();
   ~Ragnar();
   bool                  screen_randr(void);
-  void                  screen_x11(void);
-  bool                  screen_xinerama(void);
 
   public:
   static Ragnar        *getInstance(void);
@@ -39,4 +39,4 @@ class Ragnar {
   //
 };
 
-Ragnar *Ragnar::_uniq = NULL;
+#endif

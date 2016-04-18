@@ -4,6 +4,7 @@
 
 // NODE INCLUDES ############
 #include <node.h>
+#include <uv.h>
 // GCC INCLUDES #############
 #include <iostream>
 // X INCLUDES ###############
@@ -29,15 +30,16 @@ static Ragnar *ragnarWM;
 
 void
 Start(const FunctionCallbackInfo<Value>& args) {
-  //
   int result;
-  //
   result = ragnarWM->init();
   //
-  // result 0 : OK
-  // result 1 : x_connect failed
-  // result 2 : randr not present
-  // result 3 : ??
+  //test
+  // see for libuv to the event loop
+  uv_poll_t *handle;
+  //test
+  //
+  // initiate loop
+  if (result == 0) result = ragnarWM->run();
   //
   //
   Isolate* isolate = args.GetIsolate();

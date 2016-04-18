@@ -14,12 +14,14 @@ class Ragnar {
   private:
   Ragnar();
   ~Ragnar();
+  void                  loop();
   bool                  screen_randr(void);
 
   public:
   static Ragnar        *getInstance(void);
   int                   init();
   void                  quit();
+  int                   run();
   //
   //
 

@@ -2,13 +2,9 @@
 
 // INCLUDES #####################################
 
-// NODE INCLUDES ############
 #include <node.h>
-#include <uv.h>
-// GCC INCLUDES #############
 #include <iostream>
-// X INCLUDES ###############
-// APP INCLUDES #############
+
 #include "ragnar.h"
 
 using node::AtExit;
@@ -32,31 +28,15 @@ void
 Start(const FunctionCallbackInfo<Value>& args) {
   int result;
   result = ragnarWM->init();
-  //
-  //test
-  // see for libuv to the event loop
-  uv_poll_t *handle;
-  //test
-  //
-  // initiate loop
   if (result == 0) result = ragnarWM->run();
-  //
-  //
   Isolate* isolate = args.GetIsolate();
-  //args.GetReturnValue().Set(String::NewFromUtf8(isolate,result));
   args.GetReturnValue().Set(result);
-  //
 }
 
 // EXIT CALLBACK ################################
 
 static void
-at_exit_cb(void*) {
-  //
-  ragnarWM->quit();
-  //
-  cout << "Ragnar will be back ..." << endl;
-}
+at_exit_cb(void*) { ragnarWM->quit(); }
 
 // INIT RAGNAR !! ###############################
 

@@ -2,18 +2,11 @@
 
 // INCLUDES #####################################
 
-#include <node.h>
-#include <iostream>
-
 #include "ragnar.h"
 
 using node::AtExit;
 using v8::FunctionCallbackInfo;
-using v8::Isolate;
-using v8::Local;
 using v8::Object;
-using v8::String;
-using v8::Value;
 using namespace std;
 
 // GLOBAL VARIABLES #############################
@@ -25,12 +18,31 @@ static Ragnar *ragnarWM;
 // NODE FUNCTIONS ###############################
 
 void
-Start(const FunctionCallbackInfo<Value>& args) {
+Events(const FunctionCallbackInfo<Value> &args) {
+  //
+  cout << "set events manager ..." << endl;
+  //
+  ragnarWM->_evt_cb = Local<Function>::Cast(args[0]);
+  //
+}
+
+void
+Init(const FunctionCallbackInfo<Value> &args) {
+  //Isolate* isolate = args.GetIsolate();
   int result;
   result = ragnarWM->init();
-  if (result == 0) result = ragnarWM->run();
-  Isolate* isolate = args.GetIsolate();
+  if (result == 0) {
+    //
+    //
+  }
   args.GetReturnValue().Set(result);
+}
+
+void
+Start(const FunctionCallbackInfo<Value> &args) {
+  //
+  ragnarWM->run();
+  //
 }
 
 // EXIT CALLBACK ################################
@@ -44,8 +56,11 @@ void
 init(Local<Object> exports) {
   ragnarWM = Ragnar::getInstance();
   //
-  NODE_SET_METHOD(exports,"start",Start);
+  NODE_SET_METHOD(exports,"events",Events);
   //
+  NODE_SET_METHOD(exports,"init",Init);
+  //
+  NODE_SET_METHOD(exports,"start",Start);
   //
   AtExit(at_exit_cb);
 }

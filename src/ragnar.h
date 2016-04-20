@@ -5,9 +5,17 @@
 
 // INCLUDES #####################################
 
-#include <uv.h>
-#include <xcb/xcb.h>
+#include <iostream>
+#include <node.h>
 #include <xcb/randr.h>
+#include <xcb/xcb.h>
+
+using v8::Function;
+using v8::Isolate;
+using v8::Local;
+using v8::Null;
+using v8::Value;
+using v8::String;
 
 // DEFINES ######################################
 
@@ -18,6 +26,10 @@
     *(void **)__ptr = NULL;            \
   } while (0)
 
+// SHARED FUNCTIONS #############################
+
+// nothing
+
 // RAGNAR SINGLETON #############################
 
 class Ragnar {
@@ -26,22 +38,20 @@ class Ragnar {
   ~Ragnar();
   int                   init_event(void);
   bool                  init_screen(void);
-  void                  loop(void);
   void                  update_screen(void);
 
   public:
   static Ragnar        *getInstance(void);
   int                   init(void);
   void                  quit(void);
-  int                   run(void);
+  void                  run(void);
+
+  public:
+  Local<Function>       _evt_cb;
 
   private:
   xcb_screen_t         *_dft_screen;
   int                   _dft_screen_nbr;
-  uint32_t              _dft_screen_height; // MAYBE WASTED
-  uint32_t              _dft_screen_width; // MAYBE WASTED
-  xcb_window_t          _dft_win_root; // MAYBE WASTED
-  uv_poll_t            *_evt_handle;
   static Ragnar        *_uniq;
   int                   _value;
   xcb_connection_t     *_x_cnx;

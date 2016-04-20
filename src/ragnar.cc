@@ -17,7 +17,13 @@ Ragnar::~Ragnar() {}
 int
 Ragnar::init_event(void) {
   //
-  _evt_handle = new uv_poll_t;
+  uint32_t mask = XCB_CW_EVENT_MASK;
+  uint32_t value_list;
+  value_list = XCB_EVENT_MASK_BUTTON_PRESS |
+                  XCB_EVENT_MASK_KEY_PRESS;
+  //
+  //
+  xcb_change_window_attributes(_x_cnx,_dft_screen->root,mask,&value_list);
   //
   //
   return 0;
@@ -76,17 +82,6 @@ Ragnar::init_screen(void) {
   //
 }
 
-// loop - catch the X events !
-void
-Ragnar::loop(void) {
-  //
-  //
-  //
-  uv_poll_init(uv_default_loop(),_evt_handle,_dft_screen_nbr);
-  //uv_poll_start(handle, UV_READABLE, EIO_Loop);
-  //
-}
-
 // update_screen
 void
 Ragnar::update_screen(void) {
@@ -125,10 +120,8 @@ Ragnar::init(void) {
     if (tmp_screen_nbr == 0) {
       _dft_screen = iter.data;
       //
-      _dft_screen_height = _dft_screen->height_in_pixels;
-      _dft_screen_width = _dft_screen->width_in_pixels;
-      _dft_win_root = _dft_screen->root;
-      //
+      //screen->height_in_pixels;
+      //screen->width_in_pixels;
       //screen->root_depth
       //screen->default__colormap;
       //
@@ -163,13 +156,21 @@ Ragnar::quit(void) {
 }
 
 // loop - the event loop
-// return 0 : OK
-int
+void
 Ragnar::run(void) {
   //
-  cout << "take the loop !" << endl;
+  Isolate *isolate = Isolate::GetCurrent();
   //
-  //
-  return 0;
-  //
+  xcb_flush(_x_cnx);
+  xcb_generic_event_t *e;
+  while ((e = xcb_wait_for_event(_x_cnx))) {
+    //
+    cout << "get an event !" << endl;
+    //
+    Local<Value> msg[1] = {String::NewFromUtf8(isolate,"you've got a message")};
+    //
+    _evt_cb->Call(Null(isolate),1,msg);
+    //
+    free(e);
+  }
 }

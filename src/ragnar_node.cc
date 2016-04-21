@@ -4,11 +4,6 @@
 
 #include "ragnar.h"
 
-using node::AtExit;
-using v8::FunctionCallbackInfo;
-using v8::Object;
-using namespace std;
-
 // GLOBAL VARIABLES #############################
 
 Ragnar *Ragnar::_uniq = NULL;
@@ -16,33 +11,34 @@ Ragnar *Ragnar::_uniq = NULL;
 static Ragnar *ragnarWM;
 
 // NODE FUNCTIONS ###############################
-
-void
-Events(const FunctionCallbackInfo<Value> &args) {
+NAN_METHOD(Events) {
   //
   cout << "set events manager ..." << endl;
   //
-  ragnarWM->_evt_cb = Local<Function>::Cast(args[0]);
+  ragnarWM->_evt_cb = new Nan::Callback(info[0].As<Function>());
+  //
+  //ragnarWM->_evt_cb = Local<Function>::Cast(args[0]);
+  //
+  info.GetReturnValue().SetUndefined();
   //
 }
 
-void
-Init(const FunctionCallbackInfo<Value> &args) {
-  //Isolate* isolate = args.GetIsolate();
+NAN_METHOD(Init) {
+  Nan::HandleScope scope;
   int result;
   result = ragnarWM->init();
   if (result == 0) {
     //
     //
   }
-  args.GetReturnValue().Set(result);
+  info.GetReturnValue().Set(result);
 }
 
-void
-Start(const FunctionCallbackInfo<Value> &args) {
+NAN_METHOD(Start) {
   //
   ragnarWM->run();
   //
+  info.GetReturnValue().SetUndefined();
 }
 
 // EXIT CALLBACK ################################
@@ -52,15 +48,17 @@ at_exit_cb(void*) { ragnarWM->quit(); }
 
 // INIT RAGNAR !! ###############################
 
-void
-init(Local<Object> exports) {
+//void
+NAN_MODULE_INIT(init) {
   ragnarWM = Ragnar::getInstance();
   //
-  NODE_SET_METHOD(exports,"events",Events);
   //
-  NODE_SET_METHOD(exports,"init",Init);
+  Nan::Set(target,Nan::New("events").ToLocalChecked(),Nan::New<FunctionTemplate>(Events)->GetFunction());
   //
-  NODE_SET_METHOD(exports,"start",Start);
+  Nan::Set(target,Nan::New("init").ToLocalChecked(),Nan::New<FunctionTemplate>(Init)->GetFunction());
+  //
+  Nan::Set(target,Nan::New("start").ToLocalChecked(),Nan::New<FunctionTemplate>(Start)->GetFunction());
+  //
   //
   AtExit(at_exit_cb);
 }

@@ -6,6 +6,7 @@
         "src/ragnar_node.cc",
         "src/ragnar.cc"
       ],
+      "include_dirs": ["<!(node -e \"require('nan')\")"],
       "link_settings": {
         "libraries": ["-lxcb","-lxcb-randr"]
       },

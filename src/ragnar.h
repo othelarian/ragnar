@@ -6,16 +6,13 @@
 // INCLUDES #####################################
 
 #include <iostream>
-#include <node.h>
+#include <nan.h>
 #include <xcb/randr.h>
 #include <xcb/xcb.h>
 
-using v8::Function;
-using v8::Isolate;
-using v8::Local;
-using v8::Null;
-using v8::Value;
-using v8::String;
+using namespace node;
+using namespace std;
+using namespace v8;
 
 // DEFINES ######################################
 
@@ -46,8 +43,11 @@ class Ragnar {
   void                  quit(void);
   void                  run(void);
 
+  void                  testFn(void);
+
   public:
-  Local<Function>       _evt_cb;
+  //Local<Function>       _evt_cb;
+  Nan::Callback        *_evt_cb;
 
   private:
   xcb_screen_t         *_dft_screen;

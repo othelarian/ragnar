@@ -33,6 +33,4 @@ ragnar.events manage_events
 
 #ragnar.systrays manage_
 
-console.log "starting ragnar ..."
-
 ragnar.start()

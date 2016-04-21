@@ -2,11 +2,7 @@
 
 // INCLUDES #####################################
 
-#include <iostream>
-
 #include "ragnar.h"
-
-using namespace std;
 
 // RAGNAR CLASS METHODS (PRIVATE) ###############
 
@@ -158,18 +154,13 @@ Ragnar::quit(void) {
 // loop - the event loop
 void
 Ragnar::run(void) {
-  //
-  Isolate *isolate = Isolate::GetCurrent();
-  //
   xcb_flush(_x_cnx);
   xcb_generic_event_t *e;
   while ((e = xcb_wait_for_event(_x_cnx))) {
     //
-    cout << "get an event !" << endl;
     //
-    Local<Value> msg[1] = {String::NewFromUtf8(isolate,"you've got a message")};
-    //
-    _evt_cb->Call(Null(isolate),1,msg);
+    Local<Value> msg[1] = {Nan::New("hey you !").ToLocalChecked()};
+    _evt_cb->Call(Nan::GetCurrentContext()->Global(),1,msg);
     //
     free(e);
   }
